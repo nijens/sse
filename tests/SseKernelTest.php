@@ -7,6 +7,7 @@ use Nijens\Sse\Event\EventPublisherInterface;
 use Nijens\Sse\SseKernel;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bridge\PhpUnit\ClockMock;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -28,6 +29,14 @@ class SseKernelTest extends TestCase
     private $eventPublisherMock;
 
     /**
+     * Register the ClockMock for time() sensitive tests.
+     */
+    public static function setUpBeforeClass(): void
+    {
+        ClockMock::register(SseKernel::class);
+    }
+
+    /**
      * Creates a new SseKernel instance for testing.
      */
     protected function setUp(): void
@@ -36,6 +45,14 @@ class SseKernelTest extends TestCase
             ->getMock();
 
         $this->kernel = new SseKernel($this->eventPublisherMock, 300, 0);
+    }
+
+    /**
+     * Disable the ClockMock.
+     */
+    protected function tearDown(): void
+    {
+        ClockMock::withClockMock(false);
     }
 
     /**
@@ -89,6 +106,8 @@ class SseKernelTest extends TestCase
      */
     public function testHandleSendContentWithKeepAlive()
     {
+        ClockMock::withClockMock(1564584138);
+
         $this->eventPublisherMock->expects($this->once())
             ->method('__invoke')
             ->willReturn(null);
@@ -102,9 +121,6 @@ class SseKernelTest extends TestCase
         $response->sendContent();
         $responseOutput = ob_get_clean();
 
-        $this->assertSame(
-            sprintf(": %s\n\n", time()),
-            $responseOutput
-        );
+        $this->assertSame(": 1564584138\n\n", $responseOutput);
     }
 }
