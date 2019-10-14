@@ -14,7 +14,7 @@ use Nijens\Sse\Event\Event;
 use PHPUnit\Framework\TestCase;
 
 /**
- * EventTest.
+ * Tests the @see Event.
  *
  * @author Niels Nijens <nijens.niels@gmail.com>
  */
