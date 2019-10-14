@@ -1,4 +1,12 @@
 <?php
+/**
+ * This file is part of the sse package.
+ *
+ * (c) Niels Nijens <nijens.niels@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Nijens\Sse\Tests;
 
@@ -12,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * SseKernelTest.
+ * Tests the @see SseKernel.
  *
  * @author Niels Nijens <nijens.niels@gmail.com>
  */
@@ -110,6 +118,7 @@ class SseKernelTest extends TestCase
 
         $this->eventPublisherMock->expects($this->once())
             ->method('__invoke')
+            ->with(null)
             ->willReturn(null);
 
         $request = Request::create('/');
