@@ -1,0 +1,35 @@
+{
+    "name": "nijens/sse",
+    "description": "A Server Sent Events server implementation in PHP.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niels Nijens",
+            "email": "nijens.niels@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2.9",
+        "ramsey/uuid": "^3.8",
+        "symfony/http-foundation": "^4.2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "phpunit/phpunit": "^8.1",
+        "symfony/phpunit-bridge": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nijens\\Sse\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Nijens\\Sse\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

@@ -1,2 +1,2 @@
 # sse
-A Server Sent Event server implementation in PHP.
+A Server Sent Events server implementation in PHP.
