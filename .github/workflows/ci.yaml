@@ -17,3 +17,6 @@ jobs:
 
             - name: Run test suite
               run: ./vendor/bin/phpunit
+
+            - name: Check code style
+              run: ./vendor/bin/php-cs-fixer fix --dry-run -v
