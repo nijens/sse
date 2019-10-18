@@ -139,6 +139,7 @@ class SseKernel
     private function send(string $data): void
     {
         echo $data;
+        ob_flush();
         flush();
     }
 

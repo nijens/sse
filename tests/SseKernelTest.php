@@ -104,7 +104,9 @@ class SseKernelTest extends TestCase
         $response = $this->kernel->handle($request);
 
         ob_start();
+        ob_start(); // Start a second output buffer to catch the ob_flush() call.
         $response->sendContent();
+        ob_end_flush();
         $responseOutput = ob_get_clean();
 
         $this->assertSame("id: event-id\ndata: event-data\n\n", $responseOutput);
@@ -128,7 +130,9 @@ class SseKernelTest extends TestCase
         $response = $this->kernel->handle($request);
 
         ob_start();
+        ob_start(); // Start a second output buffer to catch the ob_flush() call.
         $response->sendContent();
+        ob_end_flush();
         $responseOutput = ob_get_clean();
 
         $this->assertSame(": 1564584138\n\n", $responseOutput);
