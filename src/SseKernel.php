@@ -82,6 +82,7 @@ class SseKernel
             array(
                 'Content-Type' => 'text/event-stream',
                 'Cache-Control' => 'no-cache',
+                'Connection' => 'keep-alive',
                 'X-Accel-Buffering' => 'no', // Disables FastCGI Buffering on Nginx.
             )
         );

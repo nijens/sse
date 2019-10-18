@@ -76,6 +76,7 @@ class SseKernelTest extends TestCase
         $this->assertSame(StreamedResponse::HTTP_OK, $response->getStatusCode());
         $this->assertTrue($response->headers->contains('Content-Type', 'text/event-stream'));
         $this->assertTrue($response->headers->contains('Cache-Control', 'no-cache, private'));
+        $this->assertTrue($response->headers->contains('Connection', 'keep-alive'));
         $this->assertTrue($response->headers->contains('X-Accel-Buffering', 'no'));
     }
 
