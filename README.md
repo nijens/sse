@@ -41,7 +41,7 @@ $response->send();
 ```
 
 ### Integrating the SseKernel inside a Symfony controller
-When you're using the [Symfony Framework][link-symfony] to create your application, you're still able to use the `SseKernel`
+When you're using the [Symfony Framework][link-symfony-framework] to create your application, you're still able to use the `SseKernel`
 implementation inside a controller.
 
 The following example shows a crude implementation of the `SseKernel` inside a controller:
