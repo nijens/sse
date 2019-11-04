@@ -18,7 +18,7 @@ use Ramsey\Uuid\Uuid;
  *
  * @author Niels Nijens <nijens.niels@gmail.com>
  */
-class TransportEventPublisher implements EventPublisherInterface
+class TransportEventPublisher implements ConnectedClientEventPublisherInterface
 {
     /**
      * @var TransportInterface
@@ -61,5 +61,17 @@ class TransportEventPublisher implements EventPublisherInterface
         reset($events);
 
         return $events;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function disconnectClient(): void
+    {
+        if (isset($this->connectionId) === false) {
+            return;
+        }
+
+        $this->transport->unregisterConnection($this->connectionId);
     }
 }
