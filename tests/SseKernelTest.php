@@ -10,6 +10,7 @@
 
 namespace Nijens\Sse\Tests;
 
+use Nijens\Sse\Event\ConnectedClientEventPublisherInterface;
 use Nijens\Sse\Event\Event;
 use Nijens\Sse\Event\EventPublisherInterface;
 use Nijens\Sse\SseKernel;
@@ -37,11 +38,12 @@ class SseKernelTest extends TestCase
     private $eventPublisherMock;
 
     /**
-     * Register the ClockMock for time() sensitive tests.
+     * Register the ClockMock for time() sensitive tests and ConnectionMock for connection_aborted() testing.
      */
     public static function setUpBeforeClass(): void
     {
         ClockMock::register(SseKernel::class);
+        ConnectionMock::register(SseKernel::class);
     }
 
     /**
@@ -49,7 +51,7 @@ class SseKernelTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->eventPublisherMock = $this->getMockBuilder(EventPublisherInterface::class)
+        $this->eventPublisherMock = $this->getMockBuilder(ConnectedClientEventPublisherInterface::class)
             ->getMock();
 
         $this->kernel = new SseKernel($this->eventPublisherMock, 30, 1);
@@ -61,6 +63,7 @@ class SseKernelTest extends TestCase
     protected function tearDown(): void
     {
         ClockMock::withClockMock(false);
+        ConnectionMock::withConnectionAborted(null);
     }
 
     /**
@@ -144,5 +147,27 @@ class SseKernelTest extends TestCase
         $responseOutput = ob_get_clean();
 
         $this->assertSame(": 1564584138\n\n: 1564584140\n\n: 1564584142\n\n", $responseOutput);
+    }
+
+    /**
+     * Tests if SseKernel::handle calls the ConnectedClientEventPublisherInterface::disconnectClient when
+     * connection_aborted() returns that the connection is aborted by the client.
+     */
+    public function testHandleConnectionAborted(): void
+    {
+        ConnectionMock::withConnectionAborted(true);
+
+        $this->eventPublisherMock->expects($this->once())
+            ->method('disconnectClient');
+
+        $request = Request::create('/');
+
+        $response = $this->kernel->handle($request);
+
+        ob_start();
+        ob_start(); // Start a second output buffer to catch the ob_flush() call.
+        $response->sendContent();
+        ob_end_flush();
+        ob_end_flush();
     }
 }

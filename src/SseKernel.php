@@ -10,6 +10,7 @@
 
 namespace Nijens\Sse;
 
+use Nijens\Sse\Event\ConnectedClientEventPublisherInterface;
 use Nijens\Sse\Event\EventPublisherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -108,6 +109,10 @@ class SseKernel
         $keepAliveStartTime = null;
         while (true) {
             if (connection_aborted() === 1) {
+                if ($this->eventPublisher instanceof ConnectedClientEventPublisherInterface) {
+                    $this->eventPublisher->disconnectClient();
+                }
+
                 return;
             }
 
