@@ -12,7 +12,6 @@ namespace Nijens\Sse\Tests;
 
 use Nijens\Sse\Event\ConnectedClientEventPublisherInterface;
 use Nijens\Sse\Event\Event;
-use Nijens\Sse\Event\EventPublisherInterface;
 use Nijens\Sse\SseKernel;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
