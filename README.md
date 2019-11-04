@@ -16,7 +16,59 @@ composer require nijens/sse
 ```
 
 ## Usage
+The SSE library functions with two main components:
+1. An event publisher implementation (eg. the `DateTimeEventPublisher`): Providing the events to be sent
+2. The `SseKernel`: Responsible for checking with the event publisher for new events and sending the events to the client (browser)
 
+The following example shows how to initialize the `SseKernel` with an event publisher:
+```php
+<?php
+
+require __DIR__.'/../vendor/autoload.php';
+
+use Nijens\Sse\Event\DateTimeEventPublisher;
+use Nijens\Sse\SseKernel;
+use Symfony\Component\HttpFoundation\Request;
+
+$eventPublisher = new DateTimeEventPublisher('date-time');
+
+$kernel = new SseKernel($eventPublisher);
+
+$request = Request::createFromGlobals();
+$response = $kernel->handle($request);
+
+$response->send();
+```
+
+### Integrating the SseKernel inside a Symfony controller
+When you're using the [Symfony Framework][link-symfony] to create your application, you're still able to use the `SseKernel`
+implementation inside a controller.
+
+The following example shows a crude implementation of the `SseKernel` inside a controller:
+```php
+<?php
+
+namespace App\Controller;
+
+use Nijens\Sse\Event\DateTimeEventPublisher;
+use Nijens\Sse\SseKernel;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+class SseController
+{
+    public function __invoke(Request $request): StreamedResponse
+    {
+        $eventPublisher = new DateTimeEventPublisher('date-time');
+
+        $kernel = new SseKernel($eventPublisher);
+
+        return $kernel->handle($request);
+    }
+}
+```
+Optionally, you could use [Dependency Injection][link-symfony-dependency-injection] to change the kernel and
+event publisher to services.
 
 
 ## Credits and acknowledgements
@@ -36,5 +88,7 @@ The SSE package is licensed under the MIT License. Please see the [LICENSE file]
 [link-license]: LICENSE
 [link-build]: https://github.com/nijens/sse/actions?workflow=Continuous+Integration
 [link-mdn-web-docs]: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
+[link-symfony-framework]: https://symfony.com
+[link-symfony-dependency-injection]: https://symfony.com/doc/current/service_container.html
 [link-author]: https://github.com/niels-nijens
 [link-contributors]: https://github.com/nijens/sse/contributors
