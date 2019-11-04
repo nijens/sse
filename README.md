@@ -70,6 +70,16 @@ class SseController
 Optionally, you could use [Dependency Injection][link-symfony-dependency-injection] to change the kernel and
 event publisher to services.
 
+### Creating your own event publisher
+This library provides the following event publishers:
+* `DateTimeEventPublisher`: A working example, providing the current time as event
+* `TransportEventPublisher`: A event publisher implementation for implementing a transport (eg. MySQL database implementation)
+
+You're able to create your own event publisher implementation by implementing the `EventPublisherInterface` or
+`ConnectedClientEventPublisherInterface`.
+
+If you only want read the events from a database or other storage, it is recommended to create a `TransportInterface`
+implementation for the `TransportEventPublisher`.
 
 ## Credits and acknowledgements
 
