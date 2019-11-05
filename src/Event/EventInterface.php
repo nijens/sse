@@ -11,7 +11,7 @@
 namespace Nijens\Sse\Event;
 
 /**
- * The Server Sent Event value-object specification.
+ * The Server-Sent Event value-object specification.
  *
  * @author Niels Nijens <nijens.niels@gmail.com>
  */
