@@ -11,7 +11,7 @@
 namespace Nijens\Sse\Event;
 
 /**
- * Returns the events for publication to the Server Sent event stream.
+ * Returns the events for publication to the Server-Sent event stream.
  *
  * @author Niels Nijens <nijens.niels@gmail.com>
  */
