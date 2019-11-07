@@ -50,7 +50,7 @@ class SseKernel
      */
     public function __construct(
         EventPublisherInterface $eventPublisher,
-        int $keepAliveTime = 300,
+        int $keepAliveTime = 30,
         int $eventPublisherDelay = 1
     ) {
         $this->eventPublisher = $eventPublisher;
@@ -105,15 +105,16 @@ class SseKernel
      */
     private function processEvents(): void
     {
-        $startTime = time();
+        $keepAliveStartTime = null;
         while (true) {
             if (connection_aborted() === 1) {
                 return;
             }
 
-            if ($startTime % $this->keepAliveTime === 0) {
-                // Send a comment to keep the connection alive.
+            if ($keepAliveStartTime === null || time() - $keepAliveStartTime >= $this->keepAliveTime) {
+                // Send a comment to ensure initialization of the connection and to keep the connection alive.
                 $this->send(sprintf(": %s\n\n", time()));
+                $keepAliveStartTime = time();
             }
 
             $events = ($this->eventPublisher)($this->lastEventId);
