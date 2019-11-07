@@ -50,7 +50,7 @@ class SseKernel
      */
     public function __construct(
         EventPublisherInterface $eventPublisher,
-        int $keepAliveTime = 300,
+        int $keepAliveTime = 30,
         int $eventPublisherDelay = 1
     ) {
         $this->eventPublisher = $eventPublisher;
