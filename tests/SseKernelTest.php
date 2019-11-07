@@ -52,7 +52,7 @@ class SseKernelTest extends TestCase
         $this->eventPublisherMock = $this->getMockBuilder(EventPublisherInterface::class)
             ->getMock();
 
-        $this->kernel = new SseKernel($this->eventPublisherMock, 300, 0);
+        $this->kernel = new SseKernel($this->eventPublisherMock, 30, 1);
     }
 
     /**
@@ -86,6 +86,8 @@ class SseKernelTest extends TestCase
      */
     public function testHandleSendContentWithEvents()
     {
+        ClockMock::withClockMock(1564584138);
+
         $event = new Event('event-id', 'event-data');
 
         $this->eventPublisherMock->expects($this->exactly(2))
@@ -109,7 +111,7 @@ class SseKernelTest extends TestCase
         ob_end_flush();
         $responseOutput = ob_get_clean();
 
-        $this->assertSame("id: event-id\ndata: event-data\n\n", $responseOutput);
+        $this->assertSame(": 1564584138\n\nid: event-id\ndata: event-data\n\n", $responseOutput);
     }
 
     /**
@@ -119,14 +121,20 @@ class SseKernelTest extends TestCase
     {
         ClockMock::withClockMock(1564584138);
 
-        $this->eventPublisherMock->expects($this->once())
+        $this->eventPublisherMock->expects($this->exactly(5))
             ->method('__invoke')
             ->with(null)
-            ->willReturn(null);
+            ->willReturnOnConsecutiveCalls(
+                array(),
+                array(),
+                array(),
+                array(),
+                null
+            );
 
         $request = Request::create('/');
 
-        $this->kernel = new SseKernel($this->eventPublisherMock, 1, 0);
+        $this->kernel = new SseKernel($this->eventPublisherMock, 2, 1);
         $response = $this->kernel->handle($request);
 
         ob_start();
@@ -135,6 +143,6 @@ class SseKernelTest extends TestCase
         ob_end_flush();
         $responseOutput = ob_get_clean();
 
-        $this->assertSame(": 1564584138\n\n", $responseOutput);
+        $this->assertSame(": 1564584138\n\n: 1564584140\n\n: 1564584142\n\n", $responseOutput);
     }
 }
