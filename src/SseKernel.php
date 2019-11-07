@@ -105,14 +105,14 @@ class SseKernel
      */
     private function processEvents(): void
     {
-        $keepAliveStartTime = time();
+        $keepAliveStartTime = null;
         while (true) {
             if (connection_aborted() === 1) {
                 return;
             }
 
-            if (time() - $keepAliveStartTime >= $this->keepAliveTime) {
-                // Send a comment to keep the connection alive.
+            if ($keepAliveStartTime === null || time() - $keepAliveStartTime >= $this->keepAliveTime) {
+                // Send a comment to ensure initialization of the connection and to keep the connection alive.
                 $this->send(sprintf(": %s\n\n", time()));
                 $keepAliveStartTime = time();
             }
