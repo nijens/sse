@@ -38,6 +38,13 @@ interface TransportInterface
     public function updateConnection(UuidInterface $connectionId, ?string $lastEventId): void;
 
     /**
+     * Unregisters a client connection from the data transport.
+     *
+     * @param UuidInterface $connectionId
+     */
+    public function unregisterConnection(UuidInterface $connectionId): void;
+
+    /**
      * @param string|null $lastEventId
      *
      * @return EventInterface[]

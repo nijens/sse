@@ -10,6 +10,7 @@
 
 namespace Nijens\Sse;
 
+use Nijens\Sse\Event\ConnectedClientEventPublisherInterface;
 use Nijens\Sse\Event\EventPublisherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -95,6 +96,7 @@ class SseKernel
      */
     private function initialize(Request $request): void
     {
+        ignore_user_abort(true);
         set_time_limit(0);
 
         $this->lastEventId = $request->headers->get('Last-Event-ID');
@@ -108,6 +110,10 @@ class SseKernel
         $keepAliveStartTime = null;
         while (true) {
             if (connection_aborted() === 1) {
+                if ($this->eventPublisher instanceof ConnectedClientEventPublisherInterface) {
+                    $this->eventPublisher->disconnectClient();
+                }
+
                 return;
             }
 
